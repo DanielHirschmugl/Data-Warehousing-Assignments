@@ -1,0 +1,22 @@
+services:
+  dwh-container:
+    image: postgres:16
+    container_name: dwh-container
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dwh
+      POSTGRES_PASSWORD: dwh
+      POSTGRES_DB: dwh-database
+    ports:
+      - "5434:5432"   # 5432 und 5433 sind lokal durch native PostgreSQL-Installationen (16 und 17) belegt
+    volumes:
+      - dwh-container-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh -d dwh-database"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  dwh-container-data:
+    name: dwh-container-data
